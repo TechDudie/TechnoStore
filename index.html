@@ -1,0 +1,210 @@
+<html>
+<head>
+<title>TechnoStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  float: top;
+}
+#nav {
+  overflow: hidden;
+  background-color: #dddddd;
+}
+#nav a {
+  float: left;
+  color: #555555;
+  text-align: center;
+  padding: 14px 16px;
+  line-height: 20px;
+  height: 20px;
+  text-decoration: none;
+  font-size: 17px;
+  transition: all 0.5s ease-out;
+}
+#nav a:hover {
+  background-color: #4488ff;
+  color: white;
+  transition: all 0.5s ease-in;
+}
+#nav a.home {
+  background-color: #00aa66;
+  color: white;
+}
+#header {
+  background-color: #11bb44;
+  text-align: center;
+  width: 100%;
+}
+.title {
+  color: white;
+}
+#title_container {
+  padding: 60px;
+}
+input[type=text] {
+  width: 80%;
+  left: 10%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.center {
+  text-align: center;
+}
+#apps {
+  display: grid;
+  grid-template-columns: auto auto;
+  border: 50px solid rgba(0, 0, 0, 0);
+}
+.item {
+  padding: 20px;
+  margin: 20px;
+  border-radius: 8px;
+  background-color: #cccccc;
+  transition: all 0.25s ease-out;
+  align: left;
+  color: black;
+}
+.item:hover {
+  padding: 20px;
+  margin: 20px;
+  border-radius: 8px;
+  background-color: #4488ff;
+  transition: all 0.25s ease-in;
+  align: left;
+  color: white;
+}
+.icon {
+  float: left;
+}
+.app_title {
+  float: top;
+}
+.app_info {
+  text-align: center;
+  margin: 10px 10px 10px 10px;
+}
+#popup_container {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+#popup {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  border-radius: 10px;
+}
+#close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+#close:hover, #close:focus {
+  color: #000000;
+  text-decoration: none;
+  cursor: pointer;
+}
+#code {
+  font-family: 'Roboto Mono', monospace;
+}
+</style>
+</head>
+<body>
+<!-- Header !-->
+<div id="header">
+<div id="nav">
+<a class="home" href="#">TechnoStore</a>
+<a href="#apps">Apps</a>
+</div>
+<div id="title_container">
+<h1 class="title">Hello World!</h1>
+<h2 class="title">TechnoStore for MacOS</h2>
+</div>
+</div>
+<br>
+<!-- Search Bar !-->
+<div class="center">
+<input type="text" id="app" placeholder="Search the store">
+</div>
+<br>
+<!-- App List !-->
+<div class="center">
+<h1>Scratch Apps</h1>
+</div>
+<div id="apps">
+<div id="PaperMinecraft" class="item">
+<img class="icon" src="https://uploads.scratch.mit.edu/get_image/project/10128407_240x180.png">
+<div class="app_info">
+<h1 class="app_title">Paper Minecraft</h1>
+<p class="app_desc">Paper Minecraft v11.6 by griffpatch</p>
+</div>
+</div>
+<div id="CrystalSeeker" class="item">
+<img class="icon" src="https://uploads.scratch.mit.edu/get_image/project/463553665_240x180.png">
+<div class="app_info">
+<h1 class="app_title">Crystal Seeker</h1>
+<p class="app_desc">Crystal Seeker v1.7.3 by ggenie</p>
+</div>
+</div>
+<div class="item">3</div>  
+<div class="item">4</div>
+</div>
+</div>
+<!-- Popup Dialog !-->
+<div id="popup_container">
+<div id="popup">
+<span id="close">&times;</span>
+<p>Copy and paste this code into TechnoInstaller: </p>
+<p id="code">Error retrieving code.</p>
+</div>
+</div>
+<!-- JavaScript !-->
+<script>
+// Variables
+var popup = document.getElementById("popup_container");
+var close = document.getElementById("close");
+var app_id = "";
+var app_names = $(".app_title");
+// Initialization
+for (var i = 0; i < app_names.length; i++) {
+  app_names[i] = app_names[i].innerHTML;
+}
+// Functions
+close.onclick = function() {
+  popup.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == popup) {
+    popup.style.display = "none";
+  }
+}
+$(".item").click(function() {
+  app_id = $(this).find(".app_title")[0].innerHTML.toLowerCase().replace(" ", "-");
+  console.log(app_id);
+  document.getElementById("code").innerHTML = CryptoJS.MD5(app_id).toString();
+  popup.style.display = "block";
+});
+</script>
+</body>
+</html>
